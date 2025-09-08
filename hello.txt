@@ -1,5 +1,6 @@
-Hello
-Bamidi Naveen
-BSC(AI)
-Aditya degree collage
-
+Sudent Name: Bamidi Naveen
+Suc : 2341440218
+Roll number :04
+Course : BSC(AI)
+Collage : Aditya degree collage
+Contact no :7993728570
