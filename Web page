@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshMart Grocery Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #333;
+    }
+    nav a {
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    nav a:hover {
+      background-color: #575757;
+    }
+    .container {
+      padding: 20px;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .product-card img {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    .product-card h3 {
+      margin: 10px 0;
+      color: #333;
+    }
+    .price {
+      color: #4CAF50;
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    .btn {
+      background: #4CAF50;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #45a049;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #333;
+      color: white;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>FreshMart Grocery Store</h1>
+    <p>Freshness Delivered to Your Doorstep</p>
+  </header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Fruits</a>
+    <a href="#">Vegetables</a>
+    <a href="#">Dairy</a>
+    <a href="#">Snacks</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <div class="container">
+    <h2>Featured Products</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Apples">
+        <h3>Fresh Apples</h3>
+        <p class="price">$3.50 / kg</p>
+        <button class="btn">Add to Cart</button>
+      </div>
+
+      <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Bananas">
+        <h3>Bananas</h3>
+        <p class="price">$2.00 / dozen</p>
+        <button class="btn">Add to Cart</button>
+      </div>
+
+      <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Milk">
+        <h3>Organic Milk</h3>
+        <p class="price">$1.20 / litre</p>
+        <button class="btn">Add to Cart</button>
+      </div>
+
+      <div class="product-card">
+        <img src="https://via.placeholder.com/200" alt="Potatoes">
+        <h3>Potatoes</h3>
+        <p class="price">$0.80 / kg</p>
+        <button class="btn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 FreshMart Grocery Store | All Rights Reserved</p>
+  </footer>
+
+</body>
+</html>
