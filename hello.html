@@ -1,1 +1,237 @@
-hello
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Delicio — Restaurant</title>
+  <style>
+    :root{--accent:#ef6c00;--muted:#6b7280;--bg:#0f172a;--card:#0b1220}
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; color:#e6eef8; background:linear-gradient(180deg,#07102a 0%, #071020 60%);}
+    .container{max-width:1100px;margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ff9e3a);display:flex;align-items:center;justify-content:center;font-weight:700;color:white}
+    h1{font-size:20px;margin:0}
+    nav{display:flex;gap:14px;align-items:center}
+    nav a{color:var(--muted);text-decoration:none;font-size:14px}
+    .cta{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+
+    .hero{display:flex;gap:24px;align-items:center;margin-bottom:28px}
+    .hero-text{flex:1}
+    .hero h2{font-size:28px;margin:0 0 8px}
+    .hero p{color:var(--muted);margin:0 0 12px}
+    .hero img{width:260px;border-radius:12px}
+
+    .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:12px;border-radius:12px}
+    .card img{width:100%;height:140px;object-fit:cover;border-radius:8px}
+    .card h3{margin:10px 0 6px;font-size:16px}
+    .price-row{display:flex;align-items:center;justify-content:space-between}
+    .muted{color:var(--muted);font-size:13px}
+    .add-btn{background:#0ea5a0;color:#042023;padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
+
+    .cart-btn{position:fixed;right:20px;bottom:20px;background:var(--accent);border-radius:999px;padding:14px 16px;border:none;box-shadow:0 8px 20px rgba(14,16,34,0.6);display:flex;align-items:center;gap:10px;cursor:pointer}
+    .badge{background:#081127;color:#fff;padding:6px 8px;border-radius:999px;font-weight:700}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:24px}
+    .modal{background:#071025;border-radius:12px;padding:18px;max-width:720px;width:100%;box-shadow:0 12px 40px rgba(2,6,23,0.6)}
+    .modal h3{margin:0 0 12px}
+    .cart-list{max-height:320px;overflow:auto}
+    .cart-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .qty{display:flex;gap:6px;align-items:center}
+    .icon-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px;border-radius:6px;color:var(--muted);cursor:pointer}
+
+    footer{margin-top:36px;color:var(--muted);font-size:13px;text-align:center;padding:22px 0}
+
+    /* responsive */
+    @media (max-width:720px){.hero{flex-direction:column;align-items:flex-start}.hero img{width:100%}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">D</div>
+        <div>
+          <h1>Delicio</h1>
+          <div class="muted">Modern food & delivery</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#menu">Menu</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <button class="cta" id="open-cart-top">Cart (<span id="cart-count-top">0</span>)</button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-text">
+        <h2>Crave-worthy food. Delivered fast.</h2>
+        <p class="muted">Explore our seasonal menu — wood-fired pizzas, fresh salads, house special desserts. Add to cart and checkout in seconds.</p>
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <button class="cta" id="order-now">Order Now</button>
+          <a href="#menu" style="color:var(--muted);align-self:center;text-decoration:none">See full menu →</a>
+        </div>
+      </div>
+      <img src="https://picsum.photos/seed/food1/520/360" alt="Delicious food" />
+    </section>
+
+    <main>
+      <h3 id="menu" style="margin-bottom:12px">Menu</h3>
+      <div class="menu-grid" id="menu-grid" aria-live="polite"></div>
+    </main>
+
+    <footer id="about">
+      <div class="muted">© Delicio 2025 • 123 Food Street, YourCity • Open daily 11:00 — 22:30</div>
+    </footer>
+  </div>
+
+  <!-- Cart FAB -->
+  <button class="cart-btn" id="open-cart">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l3-8H6.4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="10" cy="20" r="1" fill="#fff"/><circle cx="18" cy="20" r="1" fill="#fff"/></svg>
+    <div class="badge" id="cart-count">0</div>
+  </button>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3>Your Order</h3>
+        <div>
+          <button class="icon-btn" id="close-cart">Close</button>
+        </div>
+      </div>
+      <div class="cart-list" id="cart-list"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="muted">Total: <strong id="cart-total">₹0</strong></div>
+        <div style="display:flex;gap:8px">
+          <button class="icon-btn" id="clear-cart">Clear</button>
+          <button class="cta" id="checkout">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample menu data (in a real app this would come from an API)
+    const menu = [
+      {id:1, name:'Margherita Pizza', desc:'Tomato, mozzarella, fresh basil', price:299, img:'https://picsum.photos/seed/pizza/400/240'},
+      {id:2, name:'Pepperoni Feast', desc:'Classic pepperoni & cheese', price:349, img:'https://picsum.photos/seed/pepperoni/400/240'},
+      {id:3, name:'BBQ Chicken', desc:'Smoky BBQ sauce & grilled chicken', price:369, img:'https://picsum.photos/seed/chicken/400/240'},
+      {id:4, name:'Garden Salad', desc:'Mixed greens, citrus dressing', price:179, img:'https://picsum.photos/seed/salad/400/240'},
+      {id:5, name:'Paneer Tikka', desc:'Spiced paneer cubes, tandoori style', price:259, img:'https://picsum.photos/seed/paneer/400/240'},
+      {id:6, name:'Chocolate Lava Cake', desc:'Warm cake with molten center', price:149, img:'https://picsum.photos/seed/cake/400/240'},
+    ];
+
+    const menuGrid = document.getElementById('menu-grid');
+    const cartCount = document.getElementById('cart-count');
+    const cartCountTop = document.getElementById('cart-count-top');
+    const cartListEl = document.getElementById('cart-list');
+    const modal = document.getElementById('modal-backdrop');
+    const cartTotalEl = document.getElementById('cart-total');
+
+    // Cart stored as {id: qty}
+    let cart = JSON.parse(localStorage.getItem('cart_v1') || '{}');
+
+    function formatCurrency(n){ return '₹' + n.toFixed(0); }
+
+    function renderMenu(){
+      menuGrid.innerHTML = '';
+      menu.forEach(item => {
+        const el = document.createElement('div'); el.className = 'card';
+        el.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <h3>${item.name}</h3>
+          <div class="muted">${item.desc}</div>
+          <div class="price-row" style="margin-top:10px">
+            <div><strong>${formatCurrency(item.price)}</strong></div>
+            <button class="add-btn" data-id="${item.id}">Add</button>
+          </div>
+        `;
+        menuGrid.appendChild(el);
+      });
+      // attach listeners
+      document.querySelectorAll('.add-btn').forEach(b=>b.addEventListener('click', ()=>{
+        const id = b.getAttribute('data-id'); addToCart(Number(id));
+      }));
+    }
+
+    function saveCart(){ localStorage.setItem('cart_v1', JSON.stringify(cart)); }
+
+    function addToCart(id){ cart[id] = (cart[id] || 0) + 1; saveCart(); updateCartUI(); }
+    function removeFromCart(id){ if(!cart[id]) return; cart[id]--; if(cart[id]<=0) delete cart[id]; saveCart(); updateCartUI(); }
+    function setQty(id, qty){ if(qty<=0) { delete cart[id]; } else cart[id] = qty; saveCart(); updateCartUI(); }
+    function clearCart(){ cart = {}; saveCart(); updateCartUI(); }
+
+    function updateCartUI(){
+      const totalItems = Object.values(cart).reduce((a,b)=>a+b,0);
+      cartCount.textContent = totalItems;
+      cartCountTop.textContent = totalItems;
+
+      // render cart list
+      cartListEl.innerHTML = '';
+      let totalPrice = 0;
+      if(totalItems===0){ cartListEl.innerHTML = '<div class="muted">Your cart is empty.</div>'; cartTotalEl.textContent='₹0'; return; }
+      Object.keys(cart).forEach(idStr => {
+        const id = Number(idStr); const qty = cart[id];
+        const item = menu.find(m=>m.id===id);
+        const row = document.createElement('div'); row.className='cart-item';
+        const sub = item.price * qty; totalPrice += sub;
+        row.innerHTML = `
+          <div style="flex:1">
+            <strong>${item.name}</strong>
+            <div class="muted">${formatCurrency(item.price)} × ${qty} = <strong>${formatCurrency(sub)}</strong></div>
+          </div>
+          <div class="qty">
+            <button class="icon-btn" data-op="dec" data-id="${id}">-</button>
+            <div style="min-width:26px;text-align:center">${qty}</div>
+            <button class="icon-btn" data-op="inc" data-id="${id}">+</button>
+          </div>
+        `;
+        cartListEl.appendChild(row);
+      });
+      cartTotalEl.textContent = formatCurrency(totalPrice);
+
+      // quantity buttons
+      cartListEl.querySelectorAll('[data-op]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const op = btn.getAttribute('data-op'); const id = Number(btn.getAttribute('data-id'));
+          if(op==='inc') addToCart(id); else removeFromCart(id);
+        });
+      });
+    }
+
+    // open/close modal
+    document.getElementById('open-cart').addEventListener('click', ()=>{
+      modal.style.display='flex'; modal.setAttribute('aria-hidden','false');
+      updateCartUI();
+    });
+    document.getElementById('open-cart-top').addEventListener('click', ()=>{ modal.style.display='flex'; modal.setAttribute('aria-hidden','false'); updateCartUI(); });
+    document.getElementById('close-cart').addEventListener('click', ()=>{ modal.style.display='none'; modal.setAttribute('aria-hidden','true'); });
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      if(Object.keys(cart).length===0){ alert('Your cart is empty.'); return; }
+      // simple checkout simulation
+      const name = prompt('Enter your name for the order:');
+      if(!name) return;
+      alert('Thanks, '+name+'! Your order has been placed. (This is a demo.)');
+      clearCart(); modal.style.display='none';
+    });
+    document.getElementById('clear-cart').addEventListener('click', ()=>{ if(confirm('Clear cart?')) clearCart(); });
+
+    // Order now scroll
+    document.getElementById('order-now').addEventListener('click', ()=>{ document.getElementById('menu').scrollIntoView({behavior:'smooth'}); });
+
+    // initialize
+    renderMenu(); updateCartUI();
+
+    // accessibility: close modal on backdrop click
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) { modal.style.display='none'; modal.setAttribute('aria-hidden','true'); } });
+
+    // small progressive enhancement: keyboard shortcut C to open cart
+    window.addEventListener('keydown', (e)=>{ if(e.key.toLowerCase()==='c'){ modal.style.display='flex'; modal.setAttribute('aria-hidden','false'); updateCartUI(); } });
+  </script>
+</body>
+</html>
