@@ -3,253 +3,336 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Swiggy Clone — Food Delivery</title>
+  <title>Rasoi — Indian Restaurant</title>
+  <meta name="description" content="Rasoi - Authentic Indian cuisine demo web app" />
   <style>
-    :root{--brand:#fc8019;--muted:#6b7280;--bg:#fff;--card:#fff}
+    :root{
+      --accent:#D84315;      /* saffron-ish */
+      --accent-2:#FF9800;
+      --muted:#6b7280;
+      --bg:#fff8f5;
+      --card:#fff;
+      --glass: rgba(255,255,255,0.85);
+    }
     *{box-sizing:border-box}
-    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial; margin:0;background:var(--bg);color:#111}
-    .app{max-width:1100px;margin:0 auto;padding:18px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .logo{display:flex;align-items:center;gap:10px}
-    .logo .mark{width:44px;height:44px;border-radius:10px;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-    .search{flex:1;margin:0 16px}
-    .search input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #eee}
-
-    .top-actions{display:flex;gap:10px;align-items:center}
-    .btn{background:var(--brand);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
-
-    .main{display:flex;gap:20px;margin-top:18px}
-    .left{flex:1}
-    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-    .chip{padding:8px 10px;border-radius:999px;border:1px solid #eee;background:#fff;cursor:pointer}
-    .restaurants{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-    .rest-card{background:var(--card);border:1px solid #eee;padding:12px;border-radius:10px;display:flex;gap:12px;align-items:center}
-    .rest-card img{width:92px;height:72px;object-fit:cover;border-radius:8px}
-    .rest-info h4{margin:0 0 6px;font-size:16px}
-    .rest-meta{color:var(--muted);font-size:13px}
-
-    .sidebar{width:320px}
-    .cart{position:sticky;top:18px;border-radius:10px;border:1px solid #eee;background:#fff;padding:12px}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Roboto, system-ui, Arial, sans-serif;
+      background: linear-gradient(180deg, #fff8f0 0%, #fff df 100%);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:16px 0}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:56px;height:56px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px;
+      box-shadow:0 6px 18px rgba(216,67,21,0.12);
+    }
+    h1{font-size:20px;margin:0}
+    .subtitle{font-size:13px;color:var(--muted)}
+    nav{display:flex;gap:12px;align-items:center}
+    nav a{color:#333;text-decoration:none;font-weight:600;padding:8px 10px;border-radius:8px}
+    .cta{background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+    .hero{display:flex;gap:18px;align-items:center;margin:18px 0;padding:16px;border-radius:12px;background:linear-gradient(90deg, rgba(255,240,230,0.9), rgba(255,250,245,0.85));box-shadow:0 6px 20px rgba(10,10,10,0.04)}
+    .hero-left{flex:1}
+    .hero h2{margin:0 0 6px;font-size:26px}
+    .hero p{margin:0;color:var(--muted)}
+    .hero img{width:300px;height:auto;border-radius:12px;object-fit:cover}
+    main{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+    /* Menu grid */
+    .menu-section{background:var(--card);padding:12px;border-radius:12px}
+    .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+    .dish{background:var(--glass);border-radius:10px;padding:10px;border:1px solid rgba(0,0,0,0.04);display:flex;flex-direction:column;height:100%}
+    .dish img{width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+    .dish h3{margin:6px 0 4px;font-size:16px}
+    .dish p{margin:0 0 8px;color:var(--muted);font-size:13px}
+    .dish .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+    .add-btn{background:#2e7d32;color:white;padding:8px 10px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+    .price{font-weight:800}
+    /* Sidebar / cart */
+    .sidebar{position:relative}
+    .cart{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.04)}
     .cart h3{margin:0 0 8px}
-    .cart-list{max-height:300px;overflow:auto;margin-bottom:10px}
-    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f3f3f3}
+    .cart-list{max-height:340px;overflow:auto;margin-bottom:10px}
+    .cart-item{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed rgba(0,0,0,0.04)}
     .qty{display:flex;gap:6px;align-items:center}
-    .icon{background:#fafafa;border:1px solid #eee;padding:4px 8px;border-radius:6px;cursor:pointer}
-
-    /* modal */
-    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:none;align-items:center;justify-content:center;padding:20px}
-    .modal{background:#fff;border-radius:12px;padding:16px;max-width:900px;width:100%;max-height:90vh;overflow:auto}
-    .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px}
-    .dish{border:1px solid #f0f0f0;padding:10px;border-radius:8px}
-
-    footer{margin-top:28px;padding:12px 0;color:var(--muted);text-align:center}
-
-    @media (max-width:900px){
-      .main{flex-direction:column}
-      .sidebar{width:100%}
+    .icon{background:#fafafa;border:1px solid #eee;padding:6px 8px;border-radius:6px;cursor:pointer}
+    .muted{color:var(--muted)}
+    /* modal for dish details (optional) */
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(4,6,10,0.45);padding:24px;z-index:50}
+    .modal{background:white;border-radius:12px;padding:16px;max-width:900px;width:100%;box-shadow:0 12px 50px rgba(0,0,0,0.3)}
+    /* responsive */
+    @media (max-width:980px){
+      main{grid-template-columns:1fr}
+      .hero img{width:100%;max-width:420px}
+      .sidebar{order:2}
     }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="container">
     <header>
-      <div class="logo">
-        <div class="mark">S</div>
+      <div class="brand">
+        <div class="logo">R</div>
         <div>
-          <div style="font-weight:700">Swiggy Clone</div>
-          <div style="font-size:12px;color:var(--muted)">Food delivery UI demo</div>
+          <h1>Rasoi</h1>
+          <div class="subtitle">Authentic Indian Flavours • Delivery & Pickup</div>
         </div>
       </div>
-
-      <div class="search">
-        <input id="search" placeholder="Search for restaurants, dishes or cuisines" />
-      </div>
-
-      <div class="top-actions">
-        <button class="btn" id="filter-btn">Filters</button>
-        <button class="btn" id="open-cart">Cart (<span id="cart-count">0</span>)</button>
-      </div>
+      <nav>
+        <a href="#menu">Menu</a>
+        <a href="#about">About</a>
+        <button class="cta" id="view-cart-top">Cart (<span id="top-count">0</span>)</button>
+      </nav>
     </header>
 
-    <div class="main">
-      <div class="left">
-        <div class="filters" id="categories"></div>
-
-        <div class="restaurants" id="restaurants"></div>
+    <section class="hero" aria-hidden="false">
+      <div class="hero-left">
+        <h2>Home-style Indian food — from our kitchen to your table</h2>
+        <p class="muted">Butter chicken, biryani, dal makhani, paneer tikka — made with traditional spices and fresh ingredients.</p>
+        <div style="margin-top:12px;display:flex;gap:10px">
+          <button class="cta" id="order-now">Order Now</button>
+          <a href="#menu" class="muted" style="align-self:center;text-decoration:none">View menu →</a>
+        </div>
       </div>
+      <img src="https://picsum.photos/seed/indianfood/640/420" alt="Indian food platter">
+    </section>
 
+    <main>
+      <!-- Left: Menu -->
+      <section class="menu-section" id="menu">
+        <h2 style="margin:0 0 10px">Menu</h2>
+        <div class="menu-grid" id="menu-grid" aria-live="polite">
+          <!-- Dish cards injected by JS -->
+        </div>
+      </section>
+
+      <!-- Right: Cart -->
       <aside class="sidebar">
         <div class="cart" id="cart">
-          <h3>Your Cart</h3>
-          <div class="cart-list" id="cart-list"><div style="color:var(--muted)">Cart is empty</div></div>
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div><strong>Total:</strong></div>
-            <div><strong id="cart-total">₹0</strong></div>
+          <h3>Your Order</h3>
+          <div class="cart-list" id="cart-list">
+            <div class="muted">Cart is empty</div>
           </div>
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <button class="btn" id="checkout">Checkout</button>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="muted">Total</div>
+            <div style="font-weight:900" id="cart-total">₹0</div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="cta" id="checkout">Checkout</button>
             <button class="icon" id="clear-cart">Clear</button>
           </div>
         </div>
       </aside>
-    </div>
+    </main>
 
-    <footer>Demo Swiggy-like UI — frontend only. Not an official Swiggy product.</footer>
+    <footer id="about" style="margin-top:22px;text-align:center;color:var(--muted)">
+      © 2025 Rasoi • 45 Spice Lane, YourCity • Open daily 11:00 — 23:00
+    </footer>
   </div>
 
-  <!-- Restaurant menu modal -->
-  <div class="modal-backdrop" id="modal-backdrop">
+  <!-- Modal (dish details) -->
+  <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal" id="modal">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
-          <h2 id="modal-title" style="margin:0">Restaurant</h2>
-          <div style="color:var(--muted);font-size:14px" id="modal-sub">Quick bites • 4.2 • 25–35 min</div>
+          <h3 id="modal-title" style="margin:0">Dish</h3>
+          <div class="muted" id="modal-sub">Description</div>
         </div>
         <div><button class="icon" id="close-modal">Close</button></div>
       </div>
-
-      <div class="menu-grid" id="menu-grid"></div>
+      <div id="modal-body" style="margin-top:12px"></div>
     </div>
   </div>
 
   <script>
-    // Sample data
-    const categoriesData = ['Recommended','Pizza','Biryani','North Indian','Desserts','Chinese','Fast Food'];
-    const restaurantsData = [
-      {id:1,name:'Pizza Palace',cuisines:['Pizza','Fast Food'],rating:4.4,time:'30 min',costForTwo:350,image:'https://picsum.photos/seed/p1/300/200',menu:[{id:101,name:'Margherita',price:249},{id:102,name:'Farmhouse',price:329}]},
-      {id:2,name:'Biryani Hub',cuisines:['Biryani','Indian'],rating:4.6,time:'40 min',costForTwo:450,image:'https://picsum.photos/seed/b1/300/200',menu:[{id:201,name:'Hyderabadi Biryani',price:249},{id:202,name:'Veg Biryani',price:199}]},
-      {id:3,name:'Noodle Express',cuisines:['Chinese','Fast Food'],rating:4.1,time:'25 min',costForTwo:300,image:'https://picsum.photos/seed/n1/300/200',menu:[{id:301,name:'Veg Hakka Noodles',price:179},{id:302,name:'Chow Mein',price:169}]},
-      {id:4,name:'Sweet Tooth',cuisines:['Desserts'],rating:4.5,time:'20 min',costForTwo:200,image:'https://picsum.photos/seed/s1/300/200',menu:[{id:401,name:'Chocolate Lava Cake',price:129},{id:402,name:'Gulab Jamun',price:99}]},
+    // Sample Indian menu data
+    const menu = [
+      { id: 1, name: "Butter Chicken", desc: "Creamy tomato gravy, tandoori chicken pieces. Served with naan or rice.", price: 349, img: "https://picsum.photos/seed/butterchicken/480/320" },
+      { id: 2, name: "Hyderabadi Biryani (Chicken)", desc: "Aromatic basmati rice layered with spiced chicken, saffron and fried onions.", price: 329, img: "https://picsum.photos/seed/biryani/480/320" },
+      { id: 3, name: "Paneer Tikka Masala", desc: "Smoky tandoori paneer in a rich, spiced tomato gravy.", price: 289, img: "https://picsum.photos/seed/paneer/480/320" },
+      { id: 4, name: "Dal Makhani", desc: "Slow-cooked black lentils finished with butter and cream.", price: 199, img: "https://picsum.photos/seed/dal/480/320" },
+      { id: 5, name: "Gulab Jamun (2 pcs)", desc: "Soft milk dumplings soaked in rose cardamom syrup.", price: 99, img: "https://picsum.photos/seed/gulab/480/320" },
+      { id: 6, name: "Masala Dosa", desc: "Crispy rice crepe filled with spiced potato; served with sambar and chutneys.", price: 159, img: "https://picsum.photos/seed/dosa/480/320" },
+      { id: 7, name: "Chicken 65", desc: "Spicy deep-fried chicken appetizer with curry leaves & chilies.", price: 219, img: "https://picsum.photos/seed/chicken65/480/320" },
+      { id: 8, name: "Raita & Salad", desc: "Cooling yogurt raita and fresh salad (side).", price: 59, img: "https://picsum.photos/seed/raita/480/320" }
     ];
 
-    // cart structure: {dishId:{item, qty}}
-    let cart = JSON.parse(localStorage.getItem('swiggy_cart')|| '{}');
+    // Cart stored as { dishId: qty }
+    let cart = JSON.parse(localStorage.getItem('rasoi_cart') || '{}');
 
-    const categoriesEl = document.getElementById('categories');
-    const restaurantsEl = document.getElementById('restaurants');
+    // DOM refs
     const menuGrid = document.getElementById('menu-grid');
+    const cartListEl = document.getElementById('cart-list');
+    const cartTotalEl = document.getElementById('cart-total');
+    const topCount = document.getElementById('top-count');
     const modalBackdrop = document.getElementById('modal-backdrop');
     const modalTitle = document.getElementById('modal-title');
     const modalSub = document.getElementById('modal-sub');
-    const cartListEl = document.getElementById('cart-list');
-    const cartTotalEl = document.getElementById('cart-total');
-    const cartCountEl = document.getElementById('cart-count');
+    const modalBody = document.getElementById('modal-body');
 
-    // render categories
-    function renderCategories(){
-      categoriesData.forEach(cat=>{
-        const el = document.createElement('div'); el.className='chip'; el.textContent=cat;
-        el.addEventListener('click', ()=>{ filterByCategory(cat); });
-        categoriesEl.appendChild(el);
-      });
-    }
+    // Utility
+    function formatRupee(n){ return '₹' + Number(n).toFixed(0); }
+    function saveCart(){ localStorage.setItem('rasoi_cart', JSON.stringify(cart)); }
 
-    function filterByCategory(cat){
-      if(cat==='Recommended') renderRestaurants(restaurantsData);
-      else renderRestaurants(restaurantsData.filter(r=>r.cuisines.includes(cat)));
-    }
-
-    // render restaurants
-    function renderRestaurants(list){
-      restaurantsEl.innerHTML='';
-      if(list.length===0){ restaurantsEl.innerHTML='<div style="color:var(--muted)">No restaurants found.</div>'; return; }
-      list.forEach(r=>{
-        const card = document.createElement('div'); card.className='rest-card';
-        card.innerHTML=`
-          <img src="${r.image}" alt="${r.name}" />
-          <div class="rest-info">
-            <h4>${r.name}</h4>
-            <div class="rest-meta">${r.cuisines.join(', ')} • ${r.rating} ⭐ • ${r.time}</div>
-            <div style="margin-top:8px;color:var(--muted);font-size:13px">Cost for two: ₹${r.costForTwo}</div>
-          </div>
-        `;
-        card.addEventListener('click', ()=>openRestaurant(r));
-        restaurantsEl.appendChild(card);
-      });
-    }
-
-    function openRestaurant(r){
-      modalTitle.textContent = r.name;
-      modalSub.textContent = r.cuisines.join(', ') + ` • ${r.rating} • ${r.time}`;
-      menuGrid.innerHTML='';
-      r.menu.forEach(d=>{
-        const el = document.createElement('div'); el.className='dish';
-        el.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center">
+    // Render menu
+    function renderMenu(){
+      menuGrid.innerHTML = '';
+      menu.forEach(d=>{
+        const card = document.createElement('article');
+        card.className = 'dish';
+        card.innerHTML = `
+          <img src="${d.img}" alt="${d.name}" />
+          <h3>${d.name}</h3>
+          <p>${d.desc}</p>
+          <div class="row">
+            <div class="price">${formatRupee(d.price)}</div>
             <div>
-              <strong>${d.name}</strong>
-              <div style="color:var(--muted);font-size:13px">₹${d.price}</div>
-            </div>
-            <div>
-              <button class="btn" data-id="${d.id}" data-name="${d.name}" data-price="${d.price}">Add</button>
+              <button class="add-btn" data-id="${d.id}">Add</button>
             </div>
           </div>
         `;
-        menuGrid.appendChild(el);
+        // click to open details
+        card.querySelector('img').addEventListener('click', ()=> openModal(d));
+        card.querySelector('.dish h3')?.addEventListener('click', ()=> openModal(d));
+        // add listener
+        card.querySelector('.add-btn').addEventListener('click', ()=> addToCart(d.id));
+        menuGrid.appendChild(card);
       });
-      modalBackdrop.style.display='flex';
+    }
 
-      // attach add listeners
-      modalBackdrop.querySelectorAll('.btn').forEach(b=>{
-        b.addEventListener('click', ()=>{
-          const id = b.getAttribute('data-id');
-          const name = b.getAttribute('data-name');
-          const price = Number(b.getAttribute('data-price'));
-          addToCart({id,name,price});
+    // Cart functions
+    function addToCart(id){
+      cart[id] = (cart[id] || 0) + 1;
+      saveCart();
+      renderCart();
+      const dish = menu.find(x=>x.id==id);
+      // subtle confirmation
+      showToast(`${dish.name} added to cart`);
+    }
+    function changeQty(id, delta){
+      if(!cart[id]) return;
+      cart[id] += delta;
+      if(cart[id] <= 0) delete cart[id];
+      saveCart(); renderCart();
+    }
+    function clearCart(){
+      cart = {}; saveCart(); renderCart();
+    }
+
+    // Render cart panel
+    function renderCart(){
+      cartListEl.innerHTML = '';
+      const keys = Object.keys(cart);
+      if(keys.length === 0){
+        cartListEl.innerHTML = '<div class="muted">Your cart is empty</div>';
+        cartTotalEl.textContent = formatRupee(0);
+        topCount.textContent = '0';
+        return;
+      }
+      let total = 0, qtyTotal = 0;
+      keys.forEach(k=>{
+        const qty = cart[k];
+        const dish = menu.find(d=>d.id==k);
+        total += dish.price * qty;
+        qtyTotal += qty;
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <div style="flex:1">
+            <strong>${dish.name}</strong>
+            <div class="muted" style="font-size:13px"> ${formatRupee(dish.price)} × ${qty} = <strong>${formatRupee(dish.price*qty)}</strong></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="icon" data-op="dec" data-id="${k}">-</button>
+            <div>${qty}</div>
+            <button class="icon" data-op="inc" data-id="${k}">+</button>
+          </div>
+        `;
+        cartListEl.appendChild(row);
+      });
+      cartTotalEl.textContent = formatRupee(total);
+      topCount.textContent = String(qtyTotal);
+
+      // attach qty handlers
+      cartListEl.querySelectorAll('[data-op]').forEach(btn=>{
+        btn.addEventListener('click', ()=> {
+          const op = btn.getAttribute('data-op'), id = btn.getAttribute('data-id');
+          if(op === 'inc') changeQty(id, 1); else changeQty(id, -1);
         });
       });
     }
 
-    document.getElementById('close-modal').addEventListener('click', ()=>{ modalBackdrop.style.display='none'; });
-    modalBackdrop.addEventListener('click',(e)=>{ if(e.target===modalBackdrop) modalBackdrop.style.display='none'; });
-
-    // search
-    document.getElementById('search').addEventListener('input',(e)=>{
-      const q = e.target.value.trim().toLowerCase();
-      if(!q) renderRestaurants(restaurantsData);
-      else renderRestaurants(restaurantsData.filter(r=> r.name.toLowerCase().includes(q) || r.cuisines.join(' ').toLowerCase().includes(q)));
-    });
-
-    // cart functions
-    function saveCart(){ localStorage.setItem('swiggy_cart', JSON.stringify(cart)); }
-
-    function addToCart(item){
-      if(cart[item.id]) cart[item.id].qty += 1;
-      else cart[item.id] = {item:{id:item.id,name:item.name,price:item.price}, qty:1};
-      saveCart(); renderCart();
-      alert(item.name + ' added to cart');
+    // Modal
+    function openModal(dish){
+      modalBackdrop.style.display = 'flex';
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+      modalTitle.textContent = dish.name;
+      modalSub.textContent = `${dish.desc} • ${formatRupee(dish.price)}`;
+      modalBody.innerHTML = `
+        <div style="display:flex;gap:12px;margin-top:10px">
+          <img src="${dish.img}" alt="${dish.name}" style="width:200px;border-radius:8px;object-fit:cover">
+          <div>
+            <p class="muted">${dish.desc}</p>
+            <p style="margin-top:10px"><strong>Price: ${formatRupee(dish.price)}</strong></p>
+            <div style="margin-top:14px">
+              <button class="cta" id="modal-add">Add to cart</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('modal-add').addEventListener('click', ()=> { addToCart(dish.id); closeModal(); });
     }
+    function closeModal(){ modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); }
 
-    function changeQty(id, delta){ if(!cart[id]) return; cart[id].qty += delta; if(cart[id].qty<=0) delete cart[id]; saveCart(); renderCart(); }
-    function clearCart(){ cart = {}; saveCart(); renderCart(); }
-
-    function renderCart(){
-      cartListEl.innerHTML='';
+    // checkout
+    function checkout(){
       const keys = Object.keys(cart);
-      if(keys.length===0){ cartListEl.innerHTML = '<div style="color:var(--muted)">Cart is empty</div>'; cartTotalEl.textContent='₹0'; cartCountEl.textContent='0'; return; }
-      let total = 0; let count = 0;
-      keys.forEach(k=>{
-        const entry = cart[k];
-        const row = document.createElement('div'); row.className='cart-item';
-        const name = document.createElement('div'); name.innerHTML = `<strong>${entry.item.name}</strong><div style="color:var(--muted);font-size:13px">₹${entry.item.price} × ${entry.qty}</div>`;
-        const controls = document.createElement('div'); controls.innerHTML = `<div style="display:flex;gap:6px;align-items:center"><button class="icon" data-op="dec" data-id="${k}">-</button><div>${entry.qty}</div><button class="icon" data-op="inc" data-id="${k}">+</button></div>`;
-        row.appendChild(name); row.appendChild(controls);
-        cartListEl.appendChild(row);
-        total += entry.item.price * entry.qty; count += entry.qty;
-      });
-      cartTotalEl.textContent = '₹' + total;
-      cartCountEl.textContent = count;
-
-      // attach qty buttons
-      cartListEl.querySelectorAll('[data-op]').forEach(b=>{ b.addEventListener('click', ()=>{ const op = b.getAttribute('data-op'); const id = b.getAttribute('data-id'); if(op==='inc') changeQty(id,1); else changeQty(id,-1); }); });
+      if(keys.length === 0){ alert('Your cart is empty'); return; }
+      const name = prompt('Enter your name for the order:');
+      if(!name) return;
+      alert(`Thank you, ${name}! Your order has been placed. (Demo)`);
+      clearCart();
     }
 
-    document.getElementById('clear-cart').addEventListener('click', ()=>{ if(confirm('Clear cart?')) clearCart(); });
-    document.getElementById('checkout').addEventListener('click', ()=>{ if(Object.keys(cart).length===0){ alert('Cart is empty'); return; } const name = prompt('Enter your name'); if(!name) return; alert('Thanks '+name+'! Order placed. (Demo)'); clearCart(); });
-    document.getElementById('open-cart').addEventListener('click', ()=>{ window.scrollTo({top:0,behavior:'smooth'}); document.getElementById('cart').style.boxShadow='0 8px 30px rgba(0,0,0,0.12)'; setTimeout(()=>document.getElementById('cart').style.boxShadow='none',1200); });
+    // tiny toast
+    let toastTimer = null;
+    function showToast(msg){
+      let t = document.getElementById('rasoi-toast');
+      if(!t){
+        t = document.createElement('div'); t.id = 'rasoi-toast';
+        Object.assign(t.style, {
+          position:'fixed', right:'18px', bottom:'18px', background:'rgba(0,0,0,0.8)',
+          color:'white', padding:'10px 14px', borderRadius:'10px', zIndex:9999, fontWeight:700
+        });
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = '1';
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ t.style.opacity='0'; }, 1600);
+    }
 
-    // init
-    renderCategories(); renderRestaurants(restaurantsData); renderCart();
+    // attach UI handlers
+    document.getElementById('clear-cart').addEventListener('click', ()=> { if(confirm('Clear cart?')) clearCart(); });
+    document.getElementById('checkout').addEventListener('click', checkout);
+    document.getElementById('view-cart-top').addEventListener('click', ()=> {
+      // scroll to cart
+      document.getElementById('cart').scrollIntoView({behavior:'smooth'});
+      renderCart();
+    });
+    document.getElementById('order-now').addEventListener('click', ()=> { document.getElementById('menu').scrollIntoView({behavior:'smooth'}); });
+
+    document.getElementById('close-modal').addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e)=> { if(e.target === modalBackdrop) closeModal(); });
+
+    // init render
+    renderMenu();
+    renderCart();
   </script>
 </body>
 </html>
